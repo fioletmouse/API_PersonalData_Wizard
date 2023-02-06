@@ -37,4 +37,7 @@ $ yarn run test:cov
 
 ## Additional info
 The project was initialized by npx. If you have nest installed globally all `npx @nestjs/cli` in command might be changed to `nest`
+Swagger access path is `wizard/api`
 
+# TODO
+ add logger
