@@ -6,7 +6,8 @@ enum Pages {
 
   // property pages
   AboutProp = 'Property Info',
-  PropDetails = 'Building info',
+  PropDetails = 'Property info',
+  AnimalDetails = 'Pet info',
 
   // insurance pages
   MainOptions = 'Available plans',

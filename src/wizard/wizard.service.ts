@@ -1,20 +1,45 @@
 import { Injectable } from '@nestjs/common';
+import Companies from 'src/constants/CompaniesEnum';
 import Pages from 'src/constants/PagesEnum';
 import Sections from 'src/constants/SectionsEnum';
 import Status from 'src/constants/StatusEnum';
-import { RouteExample } from './dictionaries';
+import DefaultRoute from '../default-company/fullRoute';
+import NewAgeRoute from '../new-age-company/fullRoute';
+import SafePetRoute from '../safe-pet-company/fullRoute';
 import { IWizardSection } from './wizard.interface';
 
 @Injectable()
 export class WizardService {
   //constructor() {}
 
-  getRoute(): IWizardSection[] {
+  // strategy pattern
+  getRouteByCompany(companyId: Companies) {
+    let route = null;
+    switch (companyId) {
+      case Companies.NewAge: {
+        route = NewAgeRoute;
+        break;
+      }
+      case Companies.PetInsurance: {
+        route = SafePetRoute;
+        break;
+      }
+      default: {
+        route = DefaultRoute;
+        break;
+      }
+    }
+
+    return route;
+  }
+
+  getRoute(companyId: Companies): IWizardSection[] {
     // get RouteExample by params
-    const sections = Object.keys(RouteExample);
+    const wizard = this.getRouteByCompany(companyId);
+    const sections = Object.keys(wizard);
 
     const customizedRoute = sections.map((section) => {
-      const currentRoute = RouteExample[section];
+      const currentRoute = wizard[section];
       const status = Status.New;
 
       const item = {

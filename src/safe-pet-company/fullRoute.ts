@@ -11,7 +11,7 @@ const AboutYou = {
 
 const Property = {
   [Pages.AboutProp]: PropertyClass,
-  [Pages.PropDetails]: PropertyClass
+  [Pages.AnimalDetails]: PropertyClass
 };
 
 const Insurance = {
@@ -25,5 +25,4 @@ const Route = {
   [Sections.Insurance]: Insurance
 };
 
-export { Route as RouteExample };
-
+export default Route;

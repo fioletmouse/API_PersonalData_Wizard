@@ -1,9 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import Companies from 'src/constants/CompaniesEnum';
 
 export class WizardRouteDto {
   @ApiProperty()
   @IsString()
-  @IsNotEmpty()
   readonly sessionID: string;
+
+  @ApiProperty({
+    enum: Companies,
+    isArray: false,
+    example: Companies.Default
+  })
+  @IsEnum(Companies)
+  @IsNotEmpty()
+  readonly companyID: Companies;
 }
