@@ -5,7 +5,7 @@ import Companies from 'src/constants/CompaniesEnum';
 export class WizardRouteDto {
   @ApiProperty()
   @IsString()
-  readonly sessionID: string;
+  readonly sessionId: string;
 
   @ApiProperty({
     enum: Companies,

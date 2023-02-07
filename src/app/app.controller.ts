@@ -10,7 +10,7 @@ export class AppController {
 
   @Get('routing')
   async getRoute(@Query() queryParams: WizardRouteDto) {
-    const route = this.appService.getRoute(queryParams.sessionID, queryParams.companyID);
+    const route = this.appService.getRoute(queryParams.sessionId, queryParams.companyID);
     return route;
   }
 }

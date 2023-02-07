@@ -6,5 +6,15 @@ export const environment = {
     description: 'Personal data wizard API',
     version: '1.0',
     path: 'wizard/api'
+  },
+  pgCredentials: {
+    type: 'postgres',
+    username: 'wizardadmin',
+    host: 'localhost',
+    database: 'wizard',
+    password: '123456',
+    port: 5432,
+    autoLoadEntities: true,
+    synchronize: true
   }
 };
