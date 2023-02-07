@@ -6,7 +6,7 @@ import Sections from 'src/constants/SectionsEnum';
 import { Repository } from 'typeorm';
 import { WSession } from './../db_entities/session.entity';
 import { WizardService } from './../wizard/wizard.service';
-import { CreateSessionDto } from './app-input.dto';
+import { CreateSessionDto, PatchPageDto } from './app-input.dto';
 import { IRoute } from './app.interface';
 
 @Injectable()
@@ -16,7 +16,7 @@ export class AppService {
     @InjectRepository(WSession) private sessionRepository: Repository<WSession>
   ) {}
 
-  public async getRoute(sessionId: string, companyId: Companies): Promise<IRoute> {
+  async getRoute(sessionId: string, companyId: Companies): Promise<IRoute> {
     const route = this.wizard.getRoute(companyId);
     const response: IRoute = {
       wizardSections: route,
@@ -38,7 +38,7 @@ export class AppService {
     return response;
   }
 
-  public async createSession(createSessionParams: CreateSessionDto): Promise<string> {
+  async createSession(createSessionParams: CreateSessionDto): Promise<string> {
     const { companyId, clientId } = createSessionParams;
     try {
       const newSession = new WSession();
@@ -51,5 +51,9 @@ export class AppService {
       // add logger
       throw err;
     }
+  }
+
+  async patchPage(patchPage: PatchPageDto): Promise<boolean> {
+    return true;
   }
 }
