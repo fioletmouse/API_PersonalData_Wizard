@@ -1,6 +1,6 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { WizardRouteDto } from './app-input.dto';
+import { CreateSessionDto, WizardRouteDto } from './app-input.dto';
 import { AppService } from './app.service';
 
 @ApiTags('wizard')
@@ -10,7 +10,13 @@ export class AppController {
 
   @Get('routing')
   async getRoute(@Query() queryParams: WizardRouteDto) {
-    const route = this.appService.getRoute(queryParams.sessionId, queryParams.companyID);
+    const route = this.appService.getRoute(queryParams.sessionId, queryParams.companyId);
     return route;
+  }
+
+  @Post()
+  async createAdvice(@Req() req, @Body() createSessionParams: CreateSessionDto) {
+    const createdSessionId = await this.appService.createSession(createSessionParams);
+    return createdSessionId;
   }
 }

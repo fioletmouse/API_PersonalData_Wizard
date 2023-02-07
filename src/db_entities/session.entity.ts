@@ -1,5 +1,5 @@
 import Companies from 'src/constants/CompaniesEnum';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
 export class WSession {
@@ -22,6 +22,6 @@ export class WSession {
   @Column({ nullable: true, length: 50 })
   lastPage: string;
 
-  @Column({ nullable: false })
+  @UpdateDateColumn()
   last_edit_date: Date;
 }

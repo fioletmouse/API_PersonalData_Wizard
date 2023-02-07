@@ -9,5 +9,5 @@ interface ILastPage {
 
 export interface IRoute {
   wizardSections: IWizardSection[];
-  lastPage: ILastPage;
+  lastEdit: ILastPage;
 }

@@ -6,6 +6,7 @@ import Sections from 'src/constants/SectionsEnum';
 import { Repository } from 'typeorm';
 import { WSession } from './../db_entities/session.entity';
 import { WizardService } from './../wizard/wizard.service';
+import { CreateSessionDto } from './app-input.dto';
 import { IRoute } from './app.interface';
 
 @Injectable()
@@ -14,20 +15,41 @@ export class AppService {
     private readonly wizard: WizardService,
     @InjectRepository(WSession) private sessionRepository: Repository<WSession>
   ) {}
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   public async getRoute(sessionId: string, companyId: Companies): Promise<IRoute> {
-    const res = await this.sessionRepository.findOneBy({ sessionId });
-    console.log(res);
-    // get last page by session ID
     const route = this.wizard.getRoute(companyId);
-    const mockRes: IRoute = {
+    const response: IRoute = {
       wizardSections: route,
-      lastPage: {
-        lastPage: Pages.Address,
-        lastSection: Sections.Personal
-      }
+      lastEdit: null
     };
 
-    return mockRes;
+    // get last page by sessionId
+    if (sessionId) {
+      const sessionRec = await this.sessionRepository.findOneBy({ sessionId });
+      if (sessionRec.companyId === companyId)
+        if (sessionRec.lastPage || sessionRec.lastSection) {
+          response.lastEdit = {
+            lastPage: sessionRec.lastPage as Pages,
+            lastSection: sessionRec.lastSection as Sections
+          };
+        }
+    }
+
+    return response;
+  }
+
+  public async createSession(createSessionParams: CreateSessionDto): Promise<string> {
+    const { companyId, clientId } = createSessionParams;
+    try {
+      const newSession = new WSession();
+      newSession.companyId = companyId;
+      newSession.clientId = clientId;
+      const newRecord = await this.sessionRepository.save(newSession);
+      // use it in cookies
+      return newRecord.sessionId;
+    } catch (err) {
+      // add logger
+      throw err;
+    }
   }
 }

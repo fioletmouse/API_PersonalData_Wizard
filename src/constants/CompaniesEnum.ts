@@ -1,7 +1,7 @@
 enum Companies {
-  NewAge = 'New Age Insurance Company',
-  PetInsurance = 'Pet Care Union',
-  Default = 'All others'
+  NewAge = 'NewAge',
+  PetInsurance = 'PetCareUnion',
+  Default = 'Others'
 }
 
 export default Companies;
