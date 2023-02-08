@@ -54,7 +54,7 @@ export class PatchPageDto {
     example: Pages.Payment
   })
   @IsEnum(Pages)
-  readonly step: Pages;
+  readonly page: Pages;
 
   @ApiProperty()
   @IsObject()

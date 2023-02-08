@@ -7,3 +7,10 @@ export interface IWizardSection {
   pages: Pages[];
   status: Status;
 }
+
+export interface IPage {
+  section: Sections;
+  page: Pages;
+  data: any;
+  handle: (clientId: string, data: any) => void;
+}

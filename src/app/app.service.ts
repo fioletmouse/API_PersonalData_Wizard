@@ -53,7 +53,21 @@ export class AppService {
     }
   }
 
-  async patchPage(patchPage: PatchPageDto): Promise<boolean> {
-    return true;
+  async patchPage(patchPage: PatchPageDto): Promise<void> {
+    const { sessionId, section, page, data } = patchPage;
+
+    // retrieve the record using the arn
+    const sessionRec = await this.sessionRepository.findOneBy({ sessionId });
+    const { clientId, companyId } = sessionRec;
+    console.log(clientId);
+
+    // validate and store data
+    const instance = this.wizard.getPageClass(companyId, section, page);
+    await instance.handle(clientId, data);
+
+    // set current page in DB
+    // Get next page
+    // get prev page
+    // return nav object
   }
 }

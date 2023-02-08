@@ -22,7 +22,7 @@ export class AppController {
 
   @Patch()
   async patchPage(@Req() req, @Body() patchPage: PatchPageDto) {
-    const patchedAdvice = await this.appService.patchPage(patchPage);
-    return patchedAdvice;
+    const patchedPage = await this.appService.patchPage(patchPage);
+    return patchedPage;
   }
 }

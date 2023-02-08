@@ -6,14 +6,14 @@ import Status from 'src/constants/StatusEnum';
 import DefaultRoute from '../default-company/fullRoute';
 import NewAgeRoute from '../new-age-company/fullRoute';
 import SafePetRoute from '../safe-pet-company/fullRoute';
-import { IWizardSection } from './wizard.interface';
+import { IPage, IWizardSection } from './wizard.interface';
 
 @Injectable()
 export class WizardService {
   //constructor() {}
 
   // strategy pattern
-  getRouteByCompany(companyId: Companies) {
+  private getRouteByCompany(companyId: Companies) {
     let route = null;
     switch (companyId) {
       case Companies.NewAge: {
@@ -51,5 +51,14 @@ export class WizardService {
     });
 
     return customizedRoute;
+  }
+
+  getPageClass(companyId: Companies, section: string, page: string): IPage {
+    const wizard = this.getRouteByCompany(companyId);
+    const currentSection = wizard[section];
+    const currentPageClass = currentSection[page];
+    const instance: IPage = new currentPageClass();
+
+    return instance;
   }
 }
