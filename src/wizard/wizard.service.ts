@@ -3,7 +3,7 @@ import Companies from 'src/constants/CompaniesEnum';
 import Pages from 'src/constants/PagesEnum';
 import Sections from 'src/constants/SectionsEnum';
 import Status from 'src/constants/StatusEnum';
-import DefaultRoute from '../default-company/fullRoute';
+import DefaultRoute from '../companies/default-company/fullRoute';
 import NewAgeRoute from '../new-age-company/fullRoute';
 import SafePetRoute from '../safe-pet-company/fullRoute';
 import { IPage, IWizardSection } from './wizard.interface';
