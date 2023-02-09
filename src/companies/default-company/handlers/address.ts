@@ -3,16 +3,17 @@ import Sections from 'src/constants/SectionsEnum';
 import { IPage } from 'src/wizard/wizard.interface';
 
 class ClassData {
-  nameFirst: string = null;
-  nameLast: string = null;
-  gender: string = null;
-  dob: string = null;
+  type: string = null;
+  city: string = null;
+  street: string = null;
+  building: string = null;
+  apartment: string = null;
 }
 
-class PersonalInfo implements IPage {
+class Address implements IPage {
   data: any;
   section: Sections = Sections.Personal;
-  page: Pages = Pages.Personal;
+  page: Pages = Pages.Address;
 
   private async saveTo(clientId: string, obj: ClassData) {
     console.log('Save method');
@@ -30,4 +31,4 @@ class PersonalInfo implements IPage {
     }
   }
 }
-export default PersonalInfo;
+export default Address;

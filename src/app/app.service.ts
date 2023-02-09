@@ -7,7 +7,7 @@ import { Repository } from 'typeorm';
 import { WSession } from './../db_entities/session.entity';
 import { WizardService } from './../wizard/wizard.service';
 import { CreateSessionDto, PatchPageDto } from './app-input.dto';
-import { IRoute } from './app.interface';
+import { IPatchPageOutput, IRoute } from './app.interface';
 
 @Injectable()
 export class AppService {
@@ -53,7 +53,7 @@ export class AppService {
     }
   }
 
-  async patchPage(patchPage: PatchPageDto): Promise<void> {
+  async patchPage(patchPage: PatchPageDto): Promise<IPatchPageOutput> {
     const { sessionId, section, page, data } = patchPage;
 
     // retrieve the record using the arn
@@ -66,8 +66,29 @@ export class AppService {
     await instance.handle(clientId, data);
 
     // set current page in DB
+    await this.sessionRepository.update({ sessionId }, { lastSection: section, lastPage: page });
+
     // Get next page
+    const nextPageInstance = this.wizard.getNextPage(companyId, section, page);
+    console.log(nextPageInstance);
+
     // get prev page
+    const previousPageInstance = this.wizard.getPreviousPage(companyId, section, page);
+
     // return nav object
+    return {
+      sessionId,
+      companyId,
+      next: {
+        section: nextPageInstance.section,
+        page: nextPageInstance.page,
+        data: nextPageInstance.data
+      },
+      previous: {
+        section: previousPageInstance.section,
+        page: previousPageInstance.page,
+        data: {}
+      }
+    } as IPatchPageOutput;
   }
 }

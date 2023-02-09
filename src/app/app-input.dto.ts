@@ -1,11 +1,12 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsObject, IsString, IsUUID } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsEnum, IsNotEmpty, IsObject, IsOptional, IsString, IsUUID } from 'class-validator';
 import Companies from 'src/constants/CompaniesEnum';
 import Pages from 'src/constants/PagesEnum';
 import Sections from 'src/constants/SectionsEnum';
 
 export class WizardRouteDto {
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsUUID()
   readonly sessionId: string;
 

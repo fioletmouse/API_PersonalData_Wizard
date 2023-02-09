@@ -1,20 +1,17 @@
 import Pages from 'src/constants/PagesEnum';
 import Sections from 'src/constants/SectionsEnum';
+import Address from './handlers/address';
+import Document from './handlers/document';
 import PersonalInfo from './handlers/personal-info';
 
 const AboutYou = {
   [Pages.Personal]: PersonalInfo,
-  [Pages.Document]: PersonalInfo,
-  [Pages.Address]: PersonalInfo
-};
-
-const Property = {
-  [Pages.AboutProp]: null
+  [Pages.Document]: Document,
+  [Pages.Address]: Address
 };
 
 const Route = {
-  [Sections.Personal]: AboutYou,
-  [Sections.Property]: Property
+  [Sections.Personal]: AboutYou
 };
 
 export default Route;
