@@ -25,3 +25,11 @@ export interface IPatchPageOutput {
   next: IPageOutput;
   previous: IPageOutput;
 }
+
+export interface IFindPageOutput {
+  sessionId: string;
+  companyId: Companies;
+  current: IPageOutput;
+  next: IPageOutput;
+  previous: IPageOutput;
+}

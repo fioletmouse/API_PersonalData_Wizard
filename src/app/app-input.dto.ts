@@ -39,6 +39,7 @@ export class CreateSessionDto {
 export class PatchPageDto {
   @ApiProperty()
   @IsUUID()
+  @IsNotEmpty()
   readonly sessionId: string;
 
   @ApiProperty({
@@ -47,6 +48,7 @@ export class PatchPageDto {
     example: Sections.Property
   })
   @IsEnum(Sections)
+  @IsNotEmpty()
   readonly section: Sections;
 
   @ApiProperty({
@@ -55,9 +57,36 @@ export class PatchPageDto {
     example: Pages.Payment
   })
   @IsEnum(Pages)
+  @IsNotEmpty()
   readonly page: Pages;
 
   @ApiProperty()
   @IsObject()
+  @IsNotEmpty()
   readonly data: any;
+}
+
+export class FindPageDataDto {
+  @ApiProperty()
+  @IsUUID()
+  @IsNotEmpty()
+  readonly sessionId: string;
+
+  @ApiProperty({
+    enum: Sections,
+    isArray: false,
+    example: Sections.Property
+  })
+  @IsEnum(Sections)
+  @IsNotEmpty()
+  readonly section: Sections;
+
+  @ApiProperty({
+    enum: Pages,
+    isArray: false,
+    example: Pages.Payment
+  })
+  @IsEnum(Pages)
+  @IsNotEmpty()
+  readonly page: Pages;
 }

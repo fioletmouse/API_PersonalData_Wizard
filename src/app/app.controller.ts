@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Patch, Post, Query, Req } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { CreateSessionDto, PatchPageDto, WizardRouteDto } from './app-input.dto';
+import { ApiNotFoundResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { CreateSessionDto, FindPageDataDto, PatchPageDto, WizardRouteDto } from './app-input.dto';
 import { AppService } from './app.service';
 
 @ApiTags('wizard')
@@ -24,5 +24,13 @@ export class AppController {
   async patchPage(@Req() req, @Body() patchPage: PatchPageDto) {
     const patchedPage = await this.appService.patchPage(patchPage);
     return patchedPage;
+  }
+
+  @ApiOkResponse({ description: 'page data is found by session Id, section and page names' })
+  @ApiNotFoundResponse({ description: "page data isn't found by session Id, section and page names" })
+  @Get()
+  async findPageData(@Query() queryParams: FindPageDataDto) {
+    const pageData = await this.appService.findPageData(queryParams);
+    return pageData;
   }
 }

@@ -6,8 +6,8 @@ import Sections from 'src/constants/SectionsEnum';
 import { Repository } from 'typeorm';
 import { WSession } from './../db_entities/session.entity';
 import { WizardService } from './../wizard/wizard.service';
-import { CreateSessionDto, PatchPageDto } from './app-input.dto';
-import { IPatchPageOutput, IRoute } from './app.interface';
+import { CreateSessionDto, FindPageDataDto, PatchPageDto } from './app-input.dto';
+import { IFindPageOutput, IPatchPageOutput, IRoute } from './app.interface';
 
 @Injectable()
 export class AppService {
@@ -59,7 +59,6 @@ export class AppService {
     // retrieve the record using the arn
     const sessionRec = await this.sessionRepository.findOneBy({ sessionId });
     const { clientId, companyId } = sessionRec;
-    console.log(clientId);
 
     // validate and store data
     const instance = this.wizard.getPageClass(companyId, section, page);
@@ -70,7 +69,6 @@ export class AppService {
 
     // Get next page
     const nextPageInstance = this.wizard.getNextPage(companyId, section, page);
-    console.log(nextPageInstance);
 
     // get prev page
     const previousPageInstance = this.wizard.getPreviousPage(companyId, section, page);
@@ -90,5 +88,37 @@ export class AppService {
         data: {}
       }
     } as IPatchPageOutput;
+  }
+
+  async findPageData({ sessionId, section, page }: FindPageDataDto): Promise<IFindPageOutput> {
+    const sessionRec = await this.sessionRepository.findOneBy({ sessionId });
+    const { clientId, companyId } = sessionRec;
+
+    const instance = this.wizard.getPageClass(companyId, section, page);
+    await instance.handle(clientId, null);
+
+    const nextPageInstance = this.wizard.getNextPage(companyId, section, page);
+    const previousPageInstance = this.wizard.getPreviousPage(companyId, section, page);
+
+    const formattedData: IFindPageOutput = {
+      sessionId,
+      companyId,
+      current: {
+        section: instance.section,
+        page: instance.page,
+        data: instance.data
+      },
+      next: {
+        section: nextPageInstance.section,
+        page: nextPageInstance.page,
+        data: nextPageInstance.data
+      },
+      previous: {
+        section: previousPageInstance.section,
+        page: previousPageInstance.page,
+        data: {}
+      }
+    };
+    return formattedData;
   }
 }
