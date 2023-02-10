@@ -1,6 +1,6 @@
 import Pages from 'src/constants/PagesEnum';
 import Sections from 'src/constants/SectionsEnum';
-import Address from './handlers/address';
+import Address from '../shared/address';
 import Document from './handlers/document';
 import PersonalInfo from './handlers/personal-info';
 

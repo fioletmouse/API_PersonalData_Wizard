@@ -1,6 +1,6 @@
-enum Status {
+enum Statuses {
   Done = 'done',
-  InProgress = 'In progress',
-  New = ' not started'
+  InProgress = 'in progress',
+  New = 'not started'
 }
-export default Status;
+export default Statuses;

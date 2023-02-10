@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import NoPage from 'src/companies/default-company/handlers/no-page';
+import NoPage from 'src/companies/shared/no-page';
 import Companies from 'src/constants/CompaniesEnum';
 import Pages from 'src/constants/PagesEnum';
 import Sections from 'src/constants/SectionsEnum';
-import Status from 'src/constants/StatusEnum';
+import Statuses from 'src/constants/StatusEnum';
 import DefaultRoute from '../companies/default-company/fullRoute';
 import NewAgeRoute from '../companies/new-age-company/fullRoute';
 import SafePetRoute from '../companies/safe-pet-company/fullRoute';
@@ -32,14 +32,28 @@ export class WizardService {
     return route;
   }
 
-  getRoute(companyId: Companies): IWizardSection[] {
+  getRoute(companyId: Companies, lastSection?: Sections): IWizardSection[] {
     // get RouteExample by params
     const wizard = this.getRouteByCompany(companyId);
     const sections = Object.keys(wizard);
 
-    const customizedRoute = sections.map((section) => {
+    const indexOfLastSection = sections.indexOf(lastSection);
+    if (lastSection && indexOfLastSection < 0) {
+      const err = `last section with name: ${lastSection} is not found in dictionary`;
+      throw Error(err);
+      // add logger
+    }
+    const lastSectionOrderNumber = indexOfLastSection >= 0 ? indexOfLastSection : 0;
+
+    const customizedRoute = sections.map((section, index) => {
       const currentRoute = wizard[section];
-      const status = Status.New;
+      const status = lastSection
+        ? index < lastSectionOrderNumber
+          ? Statuses.Done
+          : index === lastSectionOrderNumber
+          ? Statuses.InProgress
+          : Statuses.New
+        : Statuses.New;
 
       const item = {
         section: section as Sections,

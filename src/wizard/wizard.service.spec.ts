@@ -1,11 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import Address from 'src/companies/default-company/handlers/address';
 import Document from 'src/companies/default-company/handlers/document';
-import NoPage from 'src/companies/default-company/handlers/no-page';
 import PersonalInfo from 'src/companies/default-company/handlers/personal-info';
+import Address from 'src/companies/shared/address';
+import NoPage from 'src/companies/shared/no-page';
 import Companies from 'src/constants/CompaniesEnum';
 import Pages from 'src/constants/PagesEnum';
 import Sections from 'src/constants/SectionsEnum';
+import Statuses from 'src/constants/StatusEnum';
 import { WizardService } from './wizard.service';
 
 describe('Wizard', () => {
@@ -69,6 +70,41 @@ describe('Wizard', () => {
     const inst = provider.getPreviousPage(Companies.NewAge, Sections.Insurance, Pages.MainOptions);
     expect(inst.section).toBe(Sections.Property);
     expect(inst.page).toBe(Pages.PropDetails);
+  });
+
+  it('should return a new wizard', async () => {
+    const wizard = await provider.getRoute(companyId);
+    expect(wizard.length).toBe(1);
+    expect(wizard[0]).toMatchObject({
+      section: 'Personal Data',
+      pages: ['Personal Info', 'Passport', 'Address'],
+      status: Statuses.New
+    });
+  });
+
+  it('should throw an error if wizard sections are changes', async () => {
+    expect(() => provider.getRoute(companyId, Sections.Insurance)).toThrow(
+      'last section with name: Available options is not found in dictionary'
+    );
+  });
+
+  it('should return a wizard that was started earlier', async () => {
+    const wizard = await provider.getRoute(Companies.NewAge, Sections.Property);
+    expect(wizard[0]).toMatchObject({
+      section: 'Personal Data',
+      pages: ['Personal Info', 'Passport', 'Address'],
+      status: Statuses.Done
+    });
+    expect(wizard[1]).toMatchObject({
+      section: 'Property',
+      pages: ['Property Info', 'Property info'],
+      status: Statuses.InProgress
+    });
+    expect(wizard[2]).toMatchObject({
+      section: 'Available options',
+      pages: ['Available plans', 'Payment info'],
+      status: Statuses.New
+    });
   });
 });
 

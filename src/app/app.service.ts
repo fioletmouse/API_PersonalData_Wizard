@@ -17,15 +17,15 @@ export class AppService {
   ) {}
 
   async getRoute(sessionId: string, companyId: Companies): Promise<IRoute> {
-    const route = this.wizard.getRoute(companyId);
+    let lastSection = null;
     const response: IRoute = {
-      wizardSections: route,
+      wizardSections: null,
       lastEdit: null
     };
-
     // get last page by sessionId
     if (sessionId) {
       const sessionRec = await this.sessionRepository.findOneBy({ sessionId });
+      lastSection = sessionRec.lastSection;
       if (sessionRec.companyId === companyId)
         if (sessionRec.lastPage || sessionRec.lastSection) {
           response.lastEdit = {
@@ -34,7 +34,8 @@ export class AppService {
           };
         }
     }
-
+    const route = this.wizard.getRoute(companyId, lastSection);
+    response.wizardSections = route;
     return response;
   }
 
