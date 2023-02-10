@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import Companies from 'src/constants/CompaniesEnum';
 import Pages from 'src/constants/PagesEnum';
@@ -58,6 +58,8 @@ export class AppService {
 
     // retrieve the record using the arn
     const sessionRec = await this.sessionRepository.findOneBy({ sessionId });
+    if (!sessionRec) throw new BadRequestException(`There is no record for session=${sessionId}`);
+
     const { clientId, companyId } = sessionRec;
 
     // validate and store data
@@ -65,7 +67,12 @@ export class AppService {
     await instance.handle(clientId, data);
 
     // set current page in DB
-    await this.sessionRepository.update({ sessionId }, { lastSection: section, lastPage: page });
+    try {
+      await this.sessionRepository.update({ sessionId }, { lastSection: section, lastPage: page });
+    } catch (err) {
+      // change to log error
+      console.log(err);
+    }
 
     // Get next page
     const nextPageInstance = this.wizard.getNextPage(companyId, section, page);
@@ -92,6 +99,7 @@ export class AppService {
 
   async findPageData({ sessionId, section, page }: FindPageDataDto): Promise<IFindPageOutput> {
     const sessionRec = await this.sessionRepository.findOneBy({ sessionId });
+    if (!sessionRec) throw new BadRequestException(`There is no record for session=${sessionId}`);
     const { clientId, companyId } = sessionRec;
 
     const instance = this.wizard.getPageClass(companyId, section, page);
@@ -111,7 +119,7 @@ export class AppService {
       next: {
         section: nextPageInstance.section,
         page: nextPageInstance.page,
-        data: nextPageInstance.data
+        data: {}
       },
       previous: {
         section: previousPageInstance.section,

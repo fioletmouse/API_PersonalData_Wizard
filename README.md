@@ -36,4 +36,5 @@ The project was initialized by npx. If you have nest installed globally all `npx
 Swagger access path is `wizard/api`
 
 # TODO
- add logger
+move typeorm commands in a separate repository file
+add logger
