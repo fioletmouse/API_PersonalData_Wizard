@@ -11,8 +11,6 @@ import { IPage, IWizardSection } from './wizard.interface';
 
 @Injectable()
 export class WizardService {
-  //constructor() {}
-
   // strategy pattern
   private getRouteByCompany(companyId: Companies) {
     let route = null;

@@ -97,11 +97,11 @@ describe('AppService', () => {
     repositoryMock.findOneBy.mockImplementation(() => Promise.resolve({ companyId: Companies.PetInsurance }));
 
     let route = await serviceProvider.getRoute('any', Companies.NewAge);
-    expect(repositoryMock.findOneBy).toHaveBeenLastCalledWith({ sessionId: 'any' });
+    expect(repositoryMock.findOneBy).toHaveBeenCalledWith({ sessionId: 'any' });
     expect(route).toEqual({ wizardSections: routeMock, lastEdit: null });
 
     route = await serviceProvider.getRoute('any', Companies.PetInsurance);
-    expect(repositoryMock.findOneBy).toHaveBeenLastCalledWith({ sessionId: 'any' });
+    expect(repositoryMock.findOneBy).toHaveBeenCalledWith({ sessionId: 'any' });
     expect(route).toEqual({ wizardSections: routeMock, lastEdit: null });
 
     expect(repositoryMock.findOneBy).toHaveBeenCalledTimes(2);
@@ -164,10 +164,10 @@ describe('AppService', () => {
 
     const patchedPage = await serviceProvider.patchPage(params);
     expect(patchedPage).toEqual(response);
-    expect(repositoryMock.findOneBy).toHaveBeenLastCalledWith({ sessionId: 'uuid' });
+    expect(repositoryMock.findOneBy).toHaveBeenCalledWith({ sessionId: 'uuid' });
     expect(repositoryMock.findOneBy).toHaveBeenCalledTimes(1);
     expect(wizardStub.getPageClass).toHaveBeenCalledWith(Companies.PetInsurance, params.section, params.page);
-    expect(repositoryMock.update).toHaveBeenLastCalledWith(
+    expect(repositoryMock.update).toHaveBeenCalledWith(
       { sessionId: params.sessionId },
       { lastSection: params.section, lastPage: params.page }
     );
@@ -181,7 +181,7 @@ describe('AppService', () => {
     repositoryMock.findOneBy.mockImplementation(() => Promise.reject('Not found'));
     await expect(serviceProvider.patchPage(params)).rejects.toEqual('Not found');
 
-    expect(repositoryMock.findOneBy).toHaveBeenLastCalledWith({ sessionId: 'uuid' });
+    expect(repositoryMock.findOneBy).toHaveBeenCalledWith({ sessionId: 'uuid' });
     expect(repositoryMock.findOneBy).toHaveBeenCalledTimes(1);
 
     expect(wizardStub.getPageClass).not.toHaveBeenCalled();
@@ -239,7 +239,7 @@ describe('AppService', () => {
 
     const foundData = await serviceProvider.findPageData(params);
     expect(foundData).toEqual(response);
-    expect(repositoryMock.findOneBy).toHaveBeenLastCalledWith({ sessionId: 'uuid' });
+    expect(repositoryMock.findOneBy).toHaveBeenCalledWith({ sessionId: 'uuid' });
     expect(repositoryMock.findOneBy).toHaveBeenCalledTimes(1);
     expect(wizardStub.getPageClass).toHaveBeenCalledWith(Companies.PetInsurance, params.section, params.page);
     expect(wizardStub.getNextPage).toHaveBeenCalledWith(Companies.PetInsurance, params.section, params.page);
@@ -251,7 +251,7 @@ describe('AppService', () => {
     repositoryMock.findOneBy.mockImplementation(() => Promise.reject('Not found'));
     await expect(serviceProvider.findPageData(params)).rejects.toEqual('Not found');
 
-    expect(repositoryMock.findOneBy).toHaveBeenLastCalledWith({ sessionId: 'uuid' });
+    expect(repositoryMock.findOneBy).toHaveBeenCalledWith({ sessionId: 'uuid' });
     expect(repositoryMock.findOneBy).toHaveBeenCalledTimes(1);
 
     expect(wizardStub.getPageClass).not.toHaveBeenCalled();
