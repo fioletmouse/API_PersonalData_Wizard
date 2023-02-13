@@ -9,6 +9,9 @@ export class WSession {
   @Column({ nullable: true, length: 50 })
   clientId: string;
 
+  @Column({ nullable: true, length: 50 })
+  internalClientId: string;
+
   @Column({
     type: 'enum',
     enum: Companies,

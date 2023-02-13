@@ -15,7 +15,7 @@ export class ClientHttp {
       );
       console.log(data);
       // mock response
-      data.clientId = 'external_' + externalId;
+      data.clientId = 'external_' + new Date().valueOf();
       return data.clientId;
     } catch (err) {
       throw new Error(`Can not create a new client. API response: ${err.message}`);

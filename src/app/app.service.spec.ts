@@ -4,6 +4,7 @@ import Companies from 'src/constants/CompaniesEnum';
 import Pages from 'src/constants/PagesEnum';
 import Sections from 'src/constants/SectionsEnum';
 import { WSession } from 'src/db_entities';
+import { HttpRepositories } from 'src/external-services/http/http-repos';
 import { IPage } from 'src/wizard/wizard.interface';
 import { WizardService } from 'src/wizard/wizard.service';
 import { Repository } from 'typeorm';
@@ -16,9 +17,12 @@ type MockType<T> = {
 
 const repositoryMockFactory: () => MockType<Repository<any>> = jest.fn(() => ({
   findOneBy: jest.fn((entity) => entity),
+  findBy: jest.fn((entity) => entity),
   save: jest.fn((entity) => entity),
   update: jest.fn((entity) => entity)
 }));
+
+const httpRepoStub = { clientRepository: { createEmptyClient: jest.fn() } };
 
 const routeMock = [
   {
@@ -42,6 +46,7 @@ const getPageMockClass = (section, page, data): IPage => ({
 describe('AppService', () => {
   let serviceProvider: AppService;
   let repositoryMock: MockType<Repository<WSession>>;
+
   const wizardStub = {
     getPageClass: jest.fn(),
     getNextPage: jest.fn(),
@@ -60,6 +65,10 @@ describe('AppService', () => {
         {
           provide: getRepositoryToken(WSession),
           useFactory: repositoryMockFactory
+        },
+        {
+          provide: HttpRepositories,
+          useValue: httpRepoStub
         }
       ]
     }).compile();
@@ -128,21 +137,52 @@ describe('AppService', () => {
     expect(repositoryMock.findOneBy).toHaveBeenCalledWith({ sessionId: 'any' });
   });
 
+  it('should return an existing session instead of creating a new one', async () => {
+    const params = { companyId: Companies.PetInsurance, clientId: 'client_id' };
+    repositoryMock.findBy.mockImplementation(() => Promise.resolve([{ sessionId: 'old_uuid' }]));
+
+    const sessionRec = await serviceProvider.createSession(params);
+
+    expect(sessionRec).toEqual('old_uuid');
+    expect(repositoryMock.save).not.toHaveBeenCalled();
+  });
+
   it('should create a session id', async () => {
     const params = { companyId: Companies.PetInsurance, clientId: 'client_id' };
+    repositoryMock.findBy.mockImplementation(() => Promise.resolve([]));
+    httpRepoStub.clientRepository.createEmptyClient.mockResolvedValue('new_internal_id');
     repositoryMock.save.mockImplementation(() => Promise.resolve({ sessionId: 'new_uuid' }));
     const sessionRec = await serviceProvider.createSession(params);
 
     expect(sessionRec).toEqual('new_uuid');
-    expect(repositoryMock.save).toHaveBeenCalledWith({ clientId: 'client_id', companyId: Companies.PetInsurance });
+    expect(repositoryMock.save).toHaveBeenCalledWith({
+      clientId: 'client_id',
+      companyId: Companies.PetInsurance,
+      internalClientId: 'new_internal_id'
+    });
+  });
+
+  it('create session should return error if it is not possible to create a new internal client', async () => {
+    const params = { companyId: Companies.PetInsurance, clientId: 'client_id' };
+    repositoryMock.findBy.mockImplementation(() => Promise.resolve([]));
+    httpRepoStub.clientRepository.createEmptyClient.mockRejectedValue('Ops, error is coming');
+
+    await expect(serviceProvider.createSession(params)).rejects.toEqual('Ops, error is coming');
+    expect(repositoryMock.save).not.toHaveBeenCalled();
   });
 
   it('create session should return error if it is not possible to create a session', async () => {
     const params = { companyId: Companies.PetInsurance, clientId: 'client_id' };
+    repositoryMock.findBy.mockImplementation(() => Promise.resolve([]));
+    httpRepoStub.clientRepository.createEmptyClient.mockResolvedValue('new_internal_id');
     repositoryMock.save.mockImplementation(() => Promise.reject('Error'));
     await expect(serviceProvider.createSession(params)).rejects.toEqual('Error');
 
-    expect(repositoryMock.save).toHaveBeenCalledWith({ clientId: 'client_id', companyId: Companies.PetInsurance });
+    expect(repositoryMock.save).toHaveBeenCalledWith({
+      clientId: 'client_id',
+      companyId: Companies.PetInsurance,
+      internalClientId: 'new_internal_id'
+    });
   });
 
   it('should patch page data successfully', async () => {

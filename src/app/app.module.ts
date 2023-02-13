@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ExternalServicesModule } from 'src/external-services/external-services.module';
 import { WizardModule } from 'src/wizard/wizard.module';
 import { environment } from '../environment';
 import { WSession } from './../db_entities/session.entity';
@@ -21,7 +22,8 @@ import { AppService } from './app.service';
       inject: [ConfigService]
     }),
     TypeOrmModule.forFeature([WSession]),
-    WizardModule
+    WizardModule,
+    ExternalServicesModule
   ],
   controllers: [AppController],
   providers: [AppService]
