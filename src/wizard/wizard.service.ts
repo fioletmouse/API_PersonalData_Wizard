@@ -7,10 +7,12 @@ import Statuses from 'src/constants/StatusEnum';
 import DefaultRoute from '../companies/default-company/fullRoute';
 import NewAgeRoute from '../companies/new-age-company/fullRoute';
 import SafePetRoute from '../companies/safe-pet-company/fullRoute';
+import { HttpRepositories } from './../external-services/http/http-repos';
 import { IPage, IWizardSection } from './wizard.interface';
 
 @Injectable()
 export class WizardService {
+  constructor(private readonly externalConn: HttpRepositories) {}
   // strategy pattern
   private getRouteByCompany(companyId: Companies) {
     let route = null;
@@ -70,7 +72,7 @@ export class WizardService {
     const wizard = this.getRouteByCompany(companyId);
     const currentSection = wizard[section];
     const currentPageClass = currentSection[page];
-    const instance: IPage = new currentPageClass();
+    const instance: IPage = new currentPageClass(this.externalConn);
 
     return instance;
   }
@@ -88,7 +90,7 @@ export class WizardService {
     const nextPageKey = sectionPagesKeys[pageIndex];
     if (nextPageKey) {
       const NextPageClass = currentSectionPages[nextPageKey];
-      return new NextPageClass();
+      return new NextPageClass(this.externalConn);
     }
     return null;
   }

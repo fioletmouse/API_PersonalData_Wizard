@@ -1,5 +1,6 @@
 import Pages from 'src/constants/PagesEnum';
 import Sections from 'src/constants/SectionsEnum';
+import { HttpRepositories } from 'src/external-services/http/http-repos';
 import { IPage } from 'src/wizard/wizard.interface';
 
 class ClassData {
@@ -15,8 +16,11 @@ class Address implements IPage {
   section: Sections = Sections.Personal;
   page: Pages = Pages.Address;
 
+  constructor(private readonly externalConn: HttpRepositories) {}
+
   private async saveTo(clientId: string, obj: ClassData) {
     console.log('Save method');
+    await this.externalConn.clientRepository.createEmptyClient('external Address');
   }
 
   private async getFrom(clientId: string) {

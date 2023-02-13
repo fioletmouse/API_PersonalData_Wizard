@@ -7,7 +7,14 @@ import Companies from 'src/constants/CompaniesEnum';
 import Pages from 'src/constants/PagesEnum';
 import Sections from 'src/constants/SectionsEnum';
 import Statuses from 'src/constants/StatusEnum';
+import { HttpRepositories } from 'src/external-services/http/http-repos';
 import { WizardService } from './wizard.service';
+
+const clientRepositoryStub = {
+  createEmptyClient: jest.fn()
+};
+
+const httpRepoStub = { clientRepository: clientRepositoryStub };
 
 describe('Wizard', () => {
   let provider: WizardService;
@@ -15,7 +22,13 @@ describe('Wizard', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [WizardService]
+      providers: [
+        WizardService,
+        {
+          provide: HttpRepositories,
+          useValue: httpRepoStub
+        }
+      ]
     }).compile();
 
     provider = module.get<WizardService>(WizardService);
